@@ -167,16 +167,16 @@ def filtra_pg(tabela,oficiais,st_sgt,cb_sd_ep,sd_ev):
                     if sd_ev:
                         return tabela
                     else:
-                        tabela = tabela[tabela['P/G'].isin(['CEL','TEN CEL','CAP','1º TEN','2º TEN','ASP','S TEN','1º SGT','2º SGT','2º SGT QE','3º SGT','CB','SD'])]
+                        tabela = tabela[tabela['P/G'].isin(['CEL','TEN CEL','CAP','1º TEN','2º TEN','ASP','S TEN','ST','1º SGT','2º SGT','2º SGT QE','3º SGT','CB','SD'])]
                         tabela.reset_index(inplace=True, drop=True)
                         return tabela
                 else:
                     if sd_ev:
-                        tabela = tabela[tabela['P/G'].isin(['CEL','TEN CEL','CAP','1º TEN','2º TEN','ASP','S TEN','1º SGT','2º SGT','2º SGT QE','3º SGT','SD EV'])]
+                        tabela = tabela[tabela['P/G'].isin(['CEL','TEN CEL','CAP','1º TEN','2º TEN','ASP','S TEN','ST','1º SGT','2º SGT','2º SGT QE','3º SGT','SD EV'])]
                         tabela.reset_index(inplace=True, drop=True)
                         return tabela
                     else:
-                        tabela = tabela[tabela['P/G'].isin(['CEL','TEN CEL','CAP','1º TEN','2º TEN','ASP','S TEN','1º SGT','2º SGT','2º SGT QE','3º SGT'])]
+                        tabela = tabela[tabela['P/G'].isin(['CEL','TEN CEL','CAP','1º TEN','2º TEN','ASP','S TEN','ST','1º SGT','2º SGT','2º SGT QE','3º SGT'])]
                         tabela.reset_index(inplace=True, drop=True)
                         return tabela
             else:
@@ -203,20 +203,20 @@ def filtra_pg(tabela,oficiais,st_sgt,cb_sd_ep,sd_ev):
             if st_sgt:
                 if cb_sd_ep:
                     if sd_ev:
-                        tabela = tabela[tabela['P/G'].isin(['S TEN','1º SGT','2º SGT','2º SGT QE','3º SGT','CB','SD','SD EV'])]
+                        tabela = tabela[tabela['P/G'].isin(['S TEN','ST','1º SGT','2º SGT','2º SGT QE','3º SGT','CB','SD','SD EV'])]
                         tabela.reset_index(inplace=True, drop=True)
                         return tabela
                     else:
-                        tabela = tabela[tabela['P/G'].isin(['S TEN','1º SGT','2º SGT','2º SGT QE','3º SGT','CB','SD'])]
+                        tabela = tabela[tabela['P/G'].isin(['S TEN','ST','1º SGT','2º SGT','2º SGT QE','3º SGT','CB','SD'])]
                         tabela.reset_index(inplace=True, drop=True)
                         return tabela
                 else:
                     if sd_ev:
-                        tabela = tabela[tabela['P/G'].isin(['S TEN','1º SGT','2º SGT','2º SGT QE','3º SGT','SD EV'])]
+                        tabela = tabela[tabela['P/G'].isin(['S TEN','ST','1º SGT','2º SGT','2º SGT QE','3º SGT','SD EV'])]
                         tabela.reset_index(inplace=True, drop=True)
                         return tabela
                     else:
-                        tabela = tabela[tabela['P/G'].isin(['S TEN','1º SGT','2º SGT','2º SGT QE','3º SGT'])]
+                        tabela = tabela[tabela['P/G'].isin(['S TEN','ST','1º SGT','2º SGT','2º SGT QE','3º SGT'])]
                         tabela.reset_index(inplace=True, drop=True)
                         return tabela
             else:
