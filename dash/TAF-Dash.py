@@ -186,10 +186,9 @@ def filtra_pg(tabela,oficiais,st_sgt,cb_sd_ep,sd_ev):
                         tabela.reset_index(inplace=True, drop=True)
                         return tabela
                     else:
-                        if sd_ev:
-                            tabela = tabela[tabela['P/G'].isin(['CEL','TEN CEL', 'TC', 'MAJ','CAP','1º TEN','2º TEN','ASP','CB','SD'])]
-                            tabela.reset_index(inplace=True, drop=True)
-                            return tabela
+                        tabela = tabela[tabela['P/G'].isin(['CEL','TEN CEL', 'TC', 'MAJ','CAP','1º TEN','2º TEN','ASP','CB','SD'])]
+                        tabela.reset_index(inplace=True, drop=True)
+                        return tabela
                 else:
                     if sd_ev:
                         tabela = tabela[tabela['P/G'].isin(['CEL','TEN CEL', 'TC', 'MAJ','CAP','1º TEN','2º TEN','ASP','SD EV'])]
