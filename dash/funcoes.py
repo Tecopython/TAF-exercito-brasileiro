@@ -1,6 +1,7 @@
 import matplotlib.pyplot as plt
 
-
+#ESSAS FUNÇÕES ESTÃO DIRETAMENTE DEPENDENTES DOS BOTAÕES DE SELEÇÃO DO PROGRAMA PRINCIPAL
+#POR ISSO TEM QUE SER COLOCADAS DEPOIS DAS SELEÇÕES
 
 def pega_taf(tabela,taf_1=True, taf_2=False, taf_3=False):#filtra os TAF de acordo com os botões de seleção
     try:
@@ -221,6 +222,26 @@ def filtra_pg(tabela,oficiais,st_sgt,cb_sd_ep,sd_ev):
                         return pd.DataFrame()
     except:
         pd.DataFrame()
+
+##################################################################################
+def filtra_segmento(tabela, segmento, mas, fem):
+    try:
+        if segmento:
+            if mas and not fem:
+                tabela = tabela[tabela['SEGMENTO'].isin(['M'])]
+                tabela.reset_index(inplace=True,drop=True)
+                return tabela
+            elif not mas and fem:
+                tabela = tabela[tabela['SEGMENTO'].isin(['F'])]
+                tabela.reset_index(inplace=True,drop=True)
+                return tabela
+            else:
+                return tabela
+        else:
+            return tabela
+    except:
+        return tabela
+
 
 
 #####################################################################################

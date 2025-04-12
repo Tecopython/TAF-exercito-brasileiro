@@ -1,7 +1,6 @@
 import pandas as pd
 from pathlib import Path
 import streamlit as st
-import matplotlib.pyplot as plt
 import seaborn as sns
 import funcoes as f
 
@@ -47,6 +46,11 @@ with col4:
         escolha_idade = st.selectbox('escolha',('TODAS','18-21','22-25','26-29','30-33','34-37','38-41','42-45','46-49','>=50'),label_visibility='hidden', placeholder='Escolha a faixa etária', index=None)
     else:
         escolha_idade = None
+    segmento = st.checkbox('SEGMENTO',value=True)
+    mas, fem = True, True #colocado só para evitar o erro na linha 84 caso a checkbox do segmento não seja selecionada.
+    if segmento:
+        mas = st.checkbox('MASCULINO', value=True)
+        fem = st.checkbox('FEMININO', value=True)
     corrida = st.checkbox('CORRIDA')
     flexao = st.checkbox('FLEXÃO')
     abdominal = st.checkbox('ABDOMINAL')
@@ -75,7 +79,9 @@ with col7:
 tabela_filtrada =(f.filtra_su(
     f.filtra_pg(
         f.filtra_chamadas(
-            f.pega_taf(tabela_tafs,taf_1,taf_2,taf_3)
+            f.filtra_segmento(
+                f.pega_taf(tabela_tafs,taf_1,taf_2,taf_3)
+                ,segmento, mas, fem)
         ,primeira_chamada,segunda_chamada,nr)
     ,oficiais,st_sgt,cb_sd_ep,sd_ev)
 ,escolha_su)
