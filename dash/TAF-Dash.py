@@ -3,6 +3,7 @@ from pathlib import Path
 import streamlit as st
 import seaborn as sns
 import funcoes as f
+import plotly.express as px
 
 #IMPORTANDO A PLANILHA PARA UM DATAFRAME
 diretorio_atual = Path.cwd()
@@ -35,7 +36,7 @@ tabela_do_taf = f.pega_taf(tabela_tafs,taf_1,taf_2,taf_3)#pegando os taf selecio
 col_central = st.columns([1, 4, 1])[1] #criando as colunas
 
 col4, mid_col, col7 = st.columns([0.15,0.7,0.15], vertical_alignment='center')
-col5,col6 = mid_col.columns(2, vertical_alignment='center')
+col5,col6 = mid_col.columns([1,3], vertical_alignment='center')
 
 #CONFIGURANDO OS MENUS DA ESQUERDA
 with col4:
@@ -67,7 +68,7 @@ with col7:
     #CRIANDO MENU PARA AS SU
     lista_su = ['Geral','1ª Cia Fuz L Mth', '2ª Cia Fuz L Mth','Cia C Ap', 'CFGS','B Mus']
     st.subheader('SUBUNIDADES')
-    escolha_su = st.radio('**SUBUNIDADES**', options=lista_su, index=1, label_visibility='hidden')
+    escolha_su = st.radio('**SUBUNIDADES**', options=lista_su, index=0, label_visibility='hidden')
     #CRIANDO MENU PARA ESCOLHA DO POSTO / GRADUAÇÃO
     st.subheader('POSTOS E GRADUAÇÕES')
     oficiais = st.checkbox('Oficiais',value=True)
@@ -100,7 +101,7 @@ if idade:
                     if mencao:#Todos os itens
                         with mid_col:
                             st.subheader(f'Para idade entre {escolha_idade}')
-                            st.dataframe(tabela_filtrada.drop(columns=['OBS', 'COMPANHIA', 'CHAMADA', 'GRÁFICOS','TAF','BI Publicado']))
+                            st.dataframe(tabela_filtrada_idade.drop(columns=['OBS', 'COMPANHIA', 'CHAMADA','TAF','BI Publicado']))
                     else:#('**SIM** - idade - corrida - flexão - abdominal - barra')('**NÃO** - menção')
                         col5.write('**SIM** - idade - corrida - flexão - abdominal - barra')
                         col6.write('**NÃO** - menção')
@@ -155,9 +156,10 @@ if idade:
                     if mencao:
                         col5.write('**SIM** - idade - corrida - menção')
                         col6.write('**NÃO** - flexão - abdominal - barra')
-                    else:
-                        col5.write('**SIM** - idade - corrida')
-                        col6.write('**NÃO** - flexão - abdominal - barra - menção')
+                    else: #IDADE E CORRIDA
+                        col5.write(f'Este gráfico de disperção mostra o desempenho na CORRIDA por SEGMENTO E IDADE -> {escolha_idade} anos')
+                        with col6:
+                            f.idade_seg_atv(tabela_filtrada_idade, 'CORRIDA')
     else:# corrida não
         if flexao:
             if abdominal:
@@ -187,9 +189,10 @@ if idade:
                     if mencao:
                         col5.write('**SIM** - idade - flexão - menção')
                         col6.write('**NÃO** - corrida - abdominal - barra')
-                    else:
-                        col5.write('**SIM** - idade - flexão')
-                        col6.write('**NÃO** - corrida - abdominal - barra - menção')
+                    else:# IDADE E FLEXÃO
+                        col5.write(f'Este gráfico de disperção mostra o desempenho na FLEXÃO DE BRAÇO por SEGMENTO E IDADE -> {escolha_idade} anos')
+                        with col6:
+                            f.idade_seg_atv(tabela_filtrada_idade, 'FLEXÃO')
         else: #corrida - flexão - não
             if abdominal:
                 if barra:
@@ -203,22 +206,26 @@ if idade:
                     if mencao:
                         col5.write('**SIM** - idade - abdominal - menção')
                         col6.write('**NÃO** - corrida - flexão - barra')
-                    else:
-                        col5.write('**SIM** - idade - abdominal')
-                        col6.write('**NÃO** - corrida - flexão - barra - menção')
+                    else:# IDADE E ABDOMINAL
+                        col5.write(f'Este gráfico de disperção mostra o desempenho no ABDOMINAL por SEGMENTO E IDADE -> {escolha_idade} anos')
+                        with col6:
+                            f.idade_seg_atv(tabela_filtrada_idade, 'ABDOMINAL')
             else: #corrida - flexão - abdominal
                 if barra:
                     if mencao:
                         col5.write('**SIM** - idade - barra - menção')
                         col6.write('**NÃO** - corrida - flexão - abdominal')
-                    else:
-                        col5.write('**SIM** - idade - barra')
-                        col6.write('**NÃO** - corrida - flexão - abdominal - menção')
+                    else: #IDADE E BARRA
+                        col5.write(f'Este gráfico de disperção mostra o desempenho na BARRA por SEGMENTO E IDADE -> {escolha_idade} anos')
+                        with col6:
+                            f.idade_seg_atv(tabela_filtrada_idade, 'BARRA')
                 else:#barra não
-                    if mencao:
-                        col5.write('**SIM** - idade - menção')
-                        col6.write('**NÃO** - corrida- flexão - abdominal - barra')
-                    else:
+                    if mencao:#MENÇÃO E IDADE
+                         with col5:
+                            st.write('O gráfico apresenta a porcentagens em cada menção, podendo ser alterado o segmento e a idade')
+                         with col6:
+                            st.pyplot(f.grafico_pizza(tabela_filtrada_idade))
+                    else:#SOMENTE IDADE
                         col5.write('**SIM** - idade')
                         col6.write('**NÃO** - corrida - flexão - abdominal - barra - menção')
 else: #idade não
@@ -228,11 +235,11 @@ else: #idade não
                 if barra:
                     if mencao:
                         with mid_col:
-                            st.dataframe(tabela_filtrada.drop(columns=['IDADE','OBS', 'COMPANHIA', 'CHAMADA', 'GRÁFICOS','TAF','BI Publicado']))
-                    else: #idade - menção  não
+                            st.dataframe(tabela_filtrada.drop(columns=['IDADE','OBS', 'COMPANHIA', 'CHAMADA','TAF','BI Publicado']))
+                    else: #CORRIDA FLEXÃO ABDOMINAL BARRA
                         col5.write('**SIM**-  corrida - flexão - abdominal - barra')
                         col6.write('**NÃO** - idade - menção')
-                        #colocar gráfico de pontos
+                       
                 else:#idade - barra -não
                     if mencao:
                         col5.write('**SIM** - corrida - flexão - abdominal - menção')
@@ -283,9 +290,10 @@ else: #idade não
                     if mencao:
                         col5.write('**SIM** - corrida - menção')
                         col6.write('**NÃO** - idade - flexão - abdominal - barra')
-                    else:
-                        col5.write('**SIM** - corrida')
-                        col6.write('**NÃO** - idade - flexão - abdominal - barra - menção')
+                    else:#SOMENTE CORRIDA
+                        col5.write('O gráfico mostra a quantidade de militares X distâncias alcançadas')
+                        with col6:
+                            f.para_um(tabela_filtrada_idade,'CORRIDA')
     else:# corrida não
         if flexao:
             if abdominal:
@@ -315,9 +323,10 @@ else: #idade não
                     if mencao:
                         col5.write('**SIM** - flexão - menção')
                         col6.write('**NÃO** -idade -  corrida - abdominal - barra')
-                    else:
-                        col5.write('**SIM** - flexão')
-                        col6.write('**NÃO** -idade -  corrida - abdominal - barra - menção')
+                    else: #SOMENTE FLEXÃO
+                        col5.write('O gráfico mostra a quantidade de militares pela quantidade de Flexões.')
+                        with col6:
+                            f.para_um(tabela_filtrada_idade,'FLEXÃO')
         else: #corrida - flexão - não
             if abdominal:
                 if barra:
@@ -331,24 +340,26 @@ else: #idade não
                     if mencao:
                         col5.write('**SIM** - abdominal - menção')
                         col6.write('**NÃO** - idade - corrida - flexão - barra')
-                    else:
-                        col5.write('**SIM** - abdominal')
-                        col6.write('**NÃO** - idade - corrida - flexão - barra - menção')
+                    else:# ABDOMINAL
+                        col5.write('O gráfico mostra a quantidade Abdominais pela quantidade de militares')
+                        with col6:
+                            f.para_um(tabela_filtrada_idade,'ABDOMINAL')
             else: #corrida - flexão - abdominal
                 if barra:
                     if mencao:
                         col5.write('**SIM** - barra - menção')
                         col6.write('**NÃO** - idade - corrida - flexão - abdominal')
-                    else:
-                        col5.write('**SIM** - barra')
-                        col6.write('**NÃO** - idade - corrida - flexão - abdominal - menção')
-                else:#barra não
-                    if mencao:#('**SIM** - menção')('**NÃO** - idade - corrida- flexão - abdominal - barra')
-                        with col5:
-                            st.pyplot(f.grafico_pizza(tabela_filtrada))
+                    else:# SOMENTE BARRA
+                        col5.write('O gráfico mostra a quantidade de militares X quantidade de barras')
                         with col6:
-                            st.dataframe(tabela_filtrada.drop(columns=['OBS', 'COMPANHIA', 'CHAMADA','TAF','BI Publicado','CORRIDA','BARRA','ABDOMINAL','FLEXÃO']))
+                            f.para_um(tabela_filtrada_idade,'BARRA')
+                else:#barra não
+                    if mencao:#SOMENTE MENÇÃO
+                        with col5:
+                            st.write('O gráfico apresenta a porcentagens em cada menção, podendo ser alterado o segmento e a idade')
+                        with col6:
+                            st.pyplot(f.grafico_pizza(tabela_filtrada))
                     else:#(tudo desmarcado)
                         with mid_col:
-                            st.dataframe(tabela_filtrada_idade)
+                            st.write('NENHUMA ATIVIDADE OU MENÇÃO SELECIONADA')
 

@@ -1,4 +1,7 @@
 import matplotlib.pyplot as plt
+import plotly.express as px
+import streamlit as st
+import pandas as pd
 
 #ESSAS FUNÇÕES ESTÃO DIRETAMENTE DEPENDENTES DOS BOTAÕES DE SELEÇÃO DO PROGRAMA PRINCIPAL
 #POR ISSO TEM QUE SER COLOCADAS DEPOIS DAS SELEÇÕES
@@ -243,9 +246,12 @@ def filtra_segmento(tabela, segmento, mas, fem):
         return tabela
 
 
-
+###################################################
+###################################################
+# GRÁFICOS
 #####################################################################################
-#GRAFICO PIZZA
+
+#Gráfico Pizza para as menções
 #criando um dicionário de cores para manter a cor fixa para cada menção no gráfico pizza
 color_dict = {
     'E': 'Turquoise',
@@ -280,32 +286,45 @@ def grafico_pizza(tabela):
     ax.axis('equal')#deixa o gráfico no formato redondo
     ax.text(0,0,f"Menções", ha='center', va='center', fontsize=16, color='black')#coloca o título do gráfico no centro (dois primeiros números dizem respeito a posição)
     return pizza
-###################################################3
-#FUNÇÃO PARA GRÁFICO DE DISPERSÃO
-def grafico_dispersao_mencao(tabela, coluna_quantitativa):
-    # Limpar os dados
-    df_clean = df.dropna(subset=['MENÇÃO', coluna_quantitativa])
-    df_clean[coluna_quantitativa] = pd.to_numeric(df_clean[coluna_quantitativa], errors='coerce')
 
-    # Mapear as menções para valores numéricos para facilitar a visualização
-    mencao_map = {'I': 1, 'R': 2, 'S': 3, 'B': 4, 'MB': 5, 'E': 6}
-    df_clean['MENÇÃO_NUM'] = df_clean['MENÇÃO'].map(mencao_map)
 
-    # Criar o gráfico
-    plt.figure(figsize=(12, 8))
-    sns.scatterplot(x=coluna_quantitativa, y='MENÇÃO_NUM', data=df_clean, hue='MENÇÃO', palette='viridis', s=100)
+###### Gráfico de barra para representar a quantidade de militares na quantidade do indice alcançado na atividade
+def para_um(tabela, atividade):
+    tabela = tabela[~((tabela[atividade] == 'A') | (tabela[atividade].isna()) | (tabela[atividade] == 'X'))]
+    df_mencao_count = tabela[atividade].value_counts().reset_index()
+    df_mencao_count.columns = [atividade, "count"]
+    fig_bar_mencao = px.bar(
+    df_mencao_count, 
+    x= atividade, 
+    y="count", 
+    title=f"Quantidade de Militares X Quantidade de {atividade}",
+    labels={atividade: f'Quantidade de {atividade}', "count": "Quantidade de Militares"}
+    )
+    st.plotly_chart(fig_bar_mencao)
 
-    # Adicionar uma linha de tendência
-    sns.regplot(x=coluna_quantitativa, y='MENÇÃO_NUM', data=df_clean, scatter=False, color='red')
+####Gráfico de disperção para uma atividade, levando em consideração a idade e o segmento
+def idade_seg_atv(tabela, atividade):
+    tabela = tabela[~((tabela[atividade] == 'A') | (tabela[atividade].isna()) | (tabela[atividade] == 'X'))]
+    try:
+        cores_personalizadas = ['#377eb8','#e41a1c']
+        media_atividade = tabela[atividade].mean()
+        fig_scatter = px.scatter(tabela, 
+                                x="IDADE", 
+                                y= atividade,
+                                color="SEGMENTO",
+                                color_discrete_sequence=cores_personalizadas,
+                                hover_data=["NOME", "P/G"],
+                                title=f"Desempenho na(o) {atividade} por SEGMENTO E IDADE")
+        fig_scatter.add_hline(
+        y=media_atividade,
+        line_dash="dash",
+        line_color="red",
+        annotation_text=f"Média: {media_atividade:.2f}",
+        annotation_position="top right"
+    )
+        st.plotly_chart(fig_scatter)
+    except:
+        st.write(f"Ocorreu um erro, provavelmente a coluna {atividade} está com algum valor lançado errado. Verifique a tabela abaixo e tente identificar e corrigir.")
 
-    # Configurar o gráfico
-    plt.title(f'Relação entre {coluna_quantitativa} e Menção', fontsize=16)
-    plt.xlabel(coluna_quantitativa, fontsize=12)
-    plt.ylabel('Menção', fontsize=12)
-    plt.yticks(range(1, 7), ['I', 'R', 'S', 'B', 'MB', 'E'])
+##### G
 
-    # Adicionar uma grade
-    plt.grid(True, linestyle='--', alpha=0.7)
-
-    # Mostrar o gráfico
-    return plt.show()
