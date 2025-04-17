@@ -3,6 +3,68 @@ import plotly.express as px
 import streamlit as st
 import pandas as pd
 
+
+def determinar_mencao(idade,dicio_atividades,atividade,lem,segmento,indice):# retorna a menção correta para o índice indicado
+    '''segmento - retirado da coluna 'SEGMENTO' da tabela
+       idade - retirado da coluna "IDADE" da tabela
+       atividade - nome da coluna da atividade na tabela
+       desempenho - item retirado da coluna da atividade
+       lem - retirado da coluna "LEM"
+    '''
+    if idade == None or isinstance(idade,str) or idade < 18:
+        return 'erro idade'
+
+    if segmento not in ['M','F'] or segmento == None:
+        return 'erro no segmento'
+
+    if lem not in ['B','CT'] or lem == None:
+        return 'erro na LEM'
+
+    if indice == None:
+        return f'erro no indice - {atividade}'
+
+    if isinstance(indice,str):
+        if indice == 'NR' or indice == 'A':
+            return indice
+        else:
+            return f'erro no indice - {atividade}'
+    indice = int(indice)
+
+# determinar a faixa de idade
+    if lem == 'B':
+            for faixa in dicio_atividades[lem][atividade][segmento].keys():
+                inicio, fim = map(int, faixa.split('-'))
+                if inicio <= idade <= fim:
+                    faixa = faixa
+                    break
+    else:
+        if atividade == 'BARRA':
+            faixa = 'X'
+        else:
+            for faixa in dicio_atividades[lem][atividade][segmento].keys():
+                inicio, fim = map(int, faixa.split('-'))
+                if inicio <= idade <= fim:
+                    faixa = faixa
+                    break
+
+#determinar a menção
+    if faixa != 'X':
+        for f in dicio_atividades[lem][atividade][segmento].keys():
+            if f == faixa:
+                dicio_mencoes = dicio_atividades[lem][atividade][segmento][f]
+                if isinstance(dicio_mencoes, dict):
+                    for k, (min,max) in dicio_mencoes.items():
+                        if min <= indice <= max:
+                            return k
+                else:
+                    if indice >= dicio_mencoes:
+                        return "S"
+                    else:
+                        return "I"
+    else:
+        return indice
+
+##########################->FILTROS PARA A TABELA<-###############################
 #ESSAS FUNÇÕES ESTÃO DIRETAMENTE DEPENDENTES DOS BOTAÕES DE SELEÇÃO DO PROGRAMA PRINCIPAL
 #POR ISSO TEM QUE SER COLOCADAS DEPOIS DAS SELEÇÕES
 
@@ -246,10 +308,7 @@ def filtra_segmento(tabela, segmento, mas, fem):
         return tabela
 
 
-###################################################
-###################################################
-# GRÁFICOS
-#####################################################################################
+####################-> GRÁFICOS <-#####################
 
 #Gráfico Pizza para as menções
 #criando um dicionário de cores para manter a cor fixa para cada menção no gráfico pizza
@@ -263,10 +322,10 @@ color_dict = {
     'S': 'Violet'
 }
 #Função para gráfico pizza
-def grafico_pizza(tabela):
-    mencao = tabela["MENÇÃO"].value_counts()
+def grafico_pizza(tabela, info):
+    info_tab = tabela[info].value_counts()
     labels,sizes = list(),list()
-    for k, v in mencao.items():
+    for k, v in info_tab.items():
         labels.append(k)
         sizes.append(v)
     colors = [color_dict[label] for label in labels]#cria o dicinário para cada cor no labels levantado utilizando o dicionário color_dict
@@ -284,13 +343,13 @@ def grafico_pizza(tabela):
         textprops={'fontsize':12, 'weight':'bold'},
         )
     ax.axis('equal')#deixa o gráfico no formato redondo
-    ax.text(0,0,f"Menções", ha='center', va='center', fontsize=16, color='black')#coloca o título do gráfico no centro (dois primeiros números dizem respeito a posição)
+    ax.text(0,0, info, ha='center', va='center', fontsize=16, color='black')#coloca o título do gráfico no centro (dois primeiros números dizem respeito a posição)
     return pizza
 
 
 ###### Gráfico de barra para representar a quantidade de militares na quantidade do indice alcançado na atividade
 def para_um(tabela, atividade):
-    tabela = tabela[~((tabela[atividade] == 'A') | (tabela[atividade].isna()) | (tabela[atividade] == 'X'))]
+    tabela = tabela[~((tabela[atividade] == 'A') | (tabela[atividade].isna()) | (tabela[atividade] == 'X'))]# trata a tabela para tirar "A", nulo e 'X'
     df_mencao_count = tabela[atividade].value_counts().reset_index()
     df_mencao_count.columns = [atividade, "count"]
     fig_bar_mencao = px.bar(
@@ -304,7 +363,7 @@ def para_um(tabela, atividade):
 
 ####Gráfico de disperção para uma atividade, levando em consideração a idade e o segmento
 def idade_seg_atv(tabela, atividade):
-    tabela = tabela[~((tabela[atividade] == 'A') | (tabela[atividade].isna()) | (tabela[atividade] == 'X'))]
+    tabela = tabela[~((tabela[atividade] == 'A') | (tabela[atividade].isna()) | (tabela[atividade] == 'X'))] # trata a tabela para tirar "A", nulo e 'X'
     try:
         cores_personalizadas = ['#377eb8','#e41a1c']
         media_atividade = tabela[atividade].mean()
@@ -326,5 +385,20 @@ def idade_seg_atv(tabela, atividade):
     except:
         st.write(f"Ocorreu um erro, provavelmente a coluna {atividade} está com algum valor lançado errado. Verifique a tabela abaixo e tente identificar e corrigir.")
 
-##### G
 
+
+
+#somente para realização de testes
+if __name__=='__main__':
+    from pathlib import Path
+    diretorio_atual = Path.cwd()
+    arquivo = diretorio_atual/'PLANILHA TAF.xlsx'
+    arquivo_excel = pd.ExcelFile(arquivo)#variável recebe todo o arquivo exel com suas abas
+    dfs = [pd.read_excel(arquivo_excel,sheet_name=sheet).assign(TAF=sheet) for sheet in arquivo_excel.sheet_names] #cria uma lista com as abas da planilha
+    tabela_tafs = pd.concat(dfs,ignore_index=True)#concatena as abas da planilha em uma só
+
+    tabela_tafs = tabela_tafs[~((tabela_tafs["CORRIDA"] == 'A') | (tabela_tafs["CORRIDA"].isna()) | (tabela_tafs["CORRIDA"] == 'X'))] # trata a tabela para tirar "A", nulo e 'X'
+    tabela_tafs["menção item"] = tabela_tafs.apply(lambda row: determinar_mencao(row['IDADE'],dicio_atividades,'CORRIDA', row['LEM'], row['SEGMENTO'], row['CORRIDA']), axis=1)
+    #idade,dicio_atividades,atividade,lem,segmento,indice
+    a = tabela_tafs['menção item'].value_counts()
+    del a["Name"]
