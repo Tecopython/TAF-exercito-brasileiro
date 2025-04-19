@@ -1,7 +1,6 @@
 import pandas as pd
 from pathlib import Path
 import streamlit as st
-import seaborn as sns
 import funcoes as f
 import plotly.express as px
 
@@ -896,20 +895,25 @@ dicio_atividades = {'B':{
 }
 }
 
-#IMPORTANDO A PLANILHA PARA UM DATAFRAME
+#DEFININDO CAMINHO PARA O ARQUIVO, DEVERÁ ESTÁR NO MESMO DIRETÓRIO DO SCRIPT
 diretorio_atual = Path.cwd()
 arquivo = diretorio_atual/'PLANILHA TAF.xlsx'
-arquivo_excel = pd.ExcelFile(arquivo)#variável recebe todo o arquivo exel com suas abas
-dfs = [pd.read_excel(arquivo_excel,sheet_name=sheet).assign(TAF=sheet) for sheet in arquivo_excel.sheet_names] #cria uma lista com as abas da planilha
-tabela_tafs = pd.concat(dfs,ignore_index=True)#concatena as abas da planilha em uma só
-
 
 ######### INICIANDO A CRIAÇÃO DA PÁGINA
 # CONFIGURANDO A PÁGINA
 st.set_page_config(
      layout='wide',
-     page_title='TAF - 10º BIL Mth',
+     page_title='Dash TAF - 10º BIL Mth',
  )
+@st.cache_data #Jogando a tabela para a memória, não precisa carregar toda vez
+def pega_excel(arquivo):
+    arquivo_excel = pd.ExcelFile(arquivo)#variável recebe todo o arquivo exel com suas abas
+    dfs = [pd.read_excel(arquivo_excel,sheet_name=sheet).assign(TAF=sheet) for sheet in arquivo_excel.sheet_names] #cria uma lista com as abas da planilha
+    tabela_tafs = pd.concat(dfs,ignore_index=True)#concatena as abas da planilha em uma só
+    return tabela_tafs
+
+tabela_tafs = pega_excel(arquivo)
+
 #TÍTULO
 st.markdown("<h1 style='text-align: center;'>TAF - 10º BIL Mth</h1>", unsafe_allow_html=True)
 
@@ -920,25 +924,21 @@ with st.container(border=True):
     taf_2 = col2.checkbox('2º TAF')
     taf_3 = col3.checkbox('3º TAF')
 
-#FILTRANDO A TABELA PELOS TAF ESCOLHIDOS
-tabela_do_taf = f.pega_taf(tabela_tafs,taf_1,taf_2,taf_3)#pegando os taf selecionados
-
-#CRIANDO AS COLUNAS CENTRAIS
-col_central = st.columns([1, 4, 1])[1] #criando as colunas
-
+#Criando as colunas (três colunas com a do meio maior)
 col4, mid_col, col7 = st.columns([0.15,0.7,0.15], vertical_alignment='center')
+#Dividindo a coluna do meio em duas
 col5,col6 = mid_col.columns([1,3], vertical_alignment='center')
 
 #CONFIGURANDO OS MENUS DA ESQUERDA
 with col4:
     #CRIANDO MENUS COM SELEÇÃO DE IDADE, EXERCÍCIOS E MENÇÕES
     st.subheader('ITENS / CONSULTA')
-    idade = st.checkbox('IDADE',value=True)
+    idade = st.checkbox('IDADE')
     if idade:
         escolha_idade = st.selectbox('escolha',('TODAS','18-21','22-25','26-29','30-33','34-37','38-41','42-45','46-49','>=50'),label_visibility='hidden', placeholder='Escolha a faixa etária', index=None)
     else:
         escolha_idade = None
-    segmento = st.checkbox('SEGMENTO',value=True)
+    segmento = st.checkbox('SEGMENTO')
     mas, fem = True, True #colocado só para evitar o erro na linha 84 caso a checkbox do segmento não seja selecionada.
     if segmento:
         mas = st.checkbox('MASCULINO', value=True)
@@ -947,7 +947,7 @@ with col4:
     flexao = st.checkbox('FLEXÃO')
     abdominal = st.checkbox('ABDOMINAL')
     barra = st.checkbox('BARRA')
-    mencao = st.checkbox('MENÇÃO')
+    mencao = st.checkbox('MENÇÃO', value=True)
     #CRIANDO MENUS COM AS CHAMADAS
     st.subheader('CHAMADAS')
     primeira_chamada = st.checkbox('1ª Chamada',value=True)
@@ -968,19 +968,21 @@ with col7:
     sd_ev = st.checkbox('Sd EV')
 
 #FILTRAR AS TABELA COM AS OPÇÕES ESCOLHIDAS NOS MENUS
-tabela_filtrada =(f.filtra_su(
-    f.filtra_pg(
-        f.filtra_chamadas(
-            f.filtra_segmento(
-                f.pega_taf(tabela_tafs,taf_1,taf_2,taf_3)
-                ,segmento, mas, fem)
-        ,primeira_chamada,segunda_chamada,nr)
-    ,oficiais,st_sgt,cb_sd_ep,sd_ev)
-,escolha_su)
-)
+tabela_filtrada = f.filtra_su(
+                              f.filtra_pg(
+                                          f.filtra_chamadas(
+                                                            f.filtra_segmento(
+                                                                              f.pega_taf(tabela_tafs,taf_1,taf_2,taf_3)
+                                                            ,segmento, mas, fem)
+                                          ,primeira_chamada,segunda_chamada,nr)
+                              ,oficiais,st_sgt,cb_sd_ep,sd_ev)
+                  ,escolha_su)
+
 
 #FILTRANDO POR IDADE O QUE SOBROU DA TABELA
 tabela_filtrada_idade = f.filtra_idade(tabela_filtrada,escolha_idade)
+#MOSTRAR A TABELA FILTRADA AO FINAL DA PÁGINA.
+st.markdown("<h2 style='text-align: center;'>Tabela com os filtros aplicados</h1>", unsafe_allow_html=True)
 tabela_filtrada_idade
 
 
@@ -1112,10 +1114,10 @@ if idade:
                             f.idade_seg_atv(tabela_filtrada_idade, 'BARRA')
                 else:#barra não
                     if mencao:#MENÇÃO E IDADE
-                         with col5:
-                            st.write('O gráfico apresenta a porcentagens em cada menção, podendo ser alterado o segmento e a idade')
-                         with col6:
-                            st.pyplot(f.grafico_pizza(tabela_filtrada_idade))
+                        with col5:
+                            st.write('O gráfico apresenta a distribuição da menção final do(s) TAF(s) selecionado(s), podendo ser alterado o SEGMENTO e a IDADE')
+                        with col6:
+                            st.pyplot(f.grafico_pizza(tabela_filtrada_idade, "MENÇÃO"))
                     else:#SOMENTE IDADE
                         col5.write('**SIM** - idade')
                         col6.write('**NÃO** - corrida - flexão - abdominal - barra - menção')
@@ -1259,7 +1261,7 @@ else: #idade não
                 else:#barra não
                     if mencao:#SOMENTE MENÇÃO
                         with col5:
-                            st.write('O gráfico apresenta a porcentagens em cada menção, podendo ser alterado o segmento e a idade')
+                            st.write('O gráfico apresenta a distribuição da menção final do(s) TAF(s) selecionado(s), podendo ser alterado o SEGMENTO e a IDADE')
                         with col6:
                             st.pyplot(f.grafico_pizza(tabela_filtrada, "MENÇÃO"))
                     else:#(tudo desmarcado)

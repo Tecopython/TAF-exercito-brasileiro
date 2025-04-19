@@ -323,28 +323,31 @@ color_dict = {
 }
 #Função para gráfico pizza
 def grafico_pizza(tabela, info):
-    info_tab = tabela[info].value_counts()
-    labels,sizes = list(),list()
-    for k, v in info_tab.items():
-        labels.append(k)
-        sizes.append(v)
-    colors = [color_dict[label] for label in labels]#cria o dicinário para cada cor no labels levantado utilizando o dicionário color_dict
-    pizza, ax = plt.subplots() #primeira variável é figura
-    #pizza_oficiais.set_facecolor(color='black') #coloca o fundo preto
-    #for text in ax.texts: # para colocar a letras na cor branca
-        #text.set_color('white')#colocando as letras na cor branca
-    ax.pie(
-        sizes, #quantidade das menções
-        labels=labels,# identificação das menções
-        colors=colors,# le o dicionario com as cores pré-definidas
-        autopct='%1.1f%%', #para aparecer as porcentagens
-        wedgeprops={'width':0.4},# Cria um buraco no fundo do gráfico, fazendo virar um anel
-        pctdistance=0.8, #centraliza as porcentagens
-        textprops={'fontsize':12, 'weight':'bold'},
-        )
-    ax.axis('equal')#deixa o gráfico no formato redondo
-    ax.text(0,0, info, ha='center', va='center', fontsize=16, color='black')#coloca o título do gráfico no centro (dois primeiros números dizem respeito a posição)
-    return pizza
+    try:
+        info_tab = tabela[info].value_counts()
+        labels,sizes = list(),list()
+        for k, v in info_tab.items():
+            labels.append(k)
+            sizes.append(v)
+        colors = [color_dict[label] for label in labels]#cria o dicinário para cada cor no labels levantado utilizando o dicionário color_dict
+        pizza, ax = plt.subplots() #primeira variável é figura
+        #pizza_oficiais.set_facecolor(color='black') #coloca o fundo preto
+        #for text in ax.texts: # para colocar a letras na cor branca
+            #text.set_color('white')#colocando as letras na cor branca
+        ax.pie(
+            sizes, #quantidade das menções
+            labels=labels,# identificação das menções
+            colors=colors,# le o dicionario com as cores pré-definidas
+            autopct='%1.1f%%', #para aparecer as porcentagens
+            wedgeprops={'width':0.4},# Cria um buraco no fundo do gráfico, fazendo virar um anel
+            pctdistance=0.8, #centraliza as porcentagens
+            textprops={'fontsize':12, 'weight':'bold'},
+            )
+        ax.axis('equal')#deixa o gráfico no formato redondo
+        ax.text(0,0, info, ha='center', va='center', fontsize=16, color='black')#coloca o título do gráfico no centro (dois primeiros números dizem respeito a posição)
+        return pizza
+    except:
+        return "Erro na geração do gráfico: verifique os dados lançados na planilha."
 
 
 ###### Gráfico de barra para representar a quantidade de militares na quantidade do indice alcançado na atividade
