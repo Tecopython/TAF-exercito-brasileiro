@@ -1,0 +1,10 @@
+# Bytecode Python
+__pycache__/
+*.py[cod]
+
+# Pastas de build
+build/
+dist/
+
+# Configurações locais do VSCode
+.vscode/

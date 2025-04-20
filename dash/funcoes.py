@@ -28,7 +28,7 @@ def determinar_mencao(idade,dicio_atividades,atividade,lem,segmento,indice):# re
             return indice
         else:
             return f'erro no indice - {atividade}'
-    indice = int(indice)
+    #indice = int(indice)
 
 # determinar a faixa de idade
     if lem == 'B':
@@ -394,14 +394,14 @@ def idade_seg_atv(tabela, atividade):
 #somente para realização de testes
 if __name__=='__main__':
     from pathlib import Path
+    from tabela_indice import *
     diretorio_atual = Path.cwd()
     arquivo = diretorio_atual/'PLANILHA TAF.xlsx'
     arquivo_excel = pd.ExcelFile(arquivo)#variável recebe todo o arquivo exel com suas abas
     dfs = [pd.read_excel(arquivo_excel,sheet_name=sheet).assign(TAF=sheet) for sheet in arquivo_excel.sheet_names] #cria uma lista com as abas da planilha
     tabela_tafs = pd.concat(dfs,ignore_index=True)#concatena as abas da planilha em uma só
 
-    tabela_tafs = tabela_tafs[~((tabela_tafs["CORRIDA"] == 'A') | (tabela_tafs["CORRIDA"].isna()) | (tabela_tafs["CORRIDA"] == 'X'))] # trata a tabela para tirar "A", nulo e 'X'
+    #tabela_tafs = tabela_tafs[~((tabela_tafs["CORRIDA"] == 'A') | (tabela_tafs["CORRIDA"].isna()) | (tabela_tafs["CORRIDA"] == 'X'))] # trata a tabela para tirar "A", nulo e 'X'
     tabela_tafs["menção item"] = tabela_tafs.apply(lambda row: determinar_mencao(row['IDADE'],dicio_atividades,'CORRIDA', row['LEM'], row['SEGMENTO'], row['CORRIDA']), axis=1)
     #idade,dicio_atividades,atividade,lem,segmento,indice
     a = tabela_tafs['menção item'].value_counts()
-    del a["Name"]
