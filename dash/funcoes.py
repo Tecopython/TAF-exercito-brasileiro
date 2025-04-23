@@ -1,7 +1,9 @@
+
 import matplotlib.pyplot as plt
 import plotly.express as px
 import streamlit as st
 import pandas as pd
+from tabela_indice import *
 
 
 def determinar_mencao(idade,dicio_atividades,atividade,lem,segmento,indice):# retorna a menção correta para o índice indicado
@@ -11,18 +13,19 @@ def determinar_mencao(idade,dicio_atividades,atividade,lem,segmento,indice):# re
        desempenho - item retirado da coluna da atividade
        lem - retirado da coluna "LEM"
     '''
+    #verificação de erro na coluna IDADE
     if idade == None or isinstance(idade,str) or idade < 18:
         return 'erro idade'
-
+    #verificação de erro na coluna SEGMENTO
     if segmento not in ['M','F'] or segmento == None:
         return 'erro no segmento'
-
+    #verificação de erro na coluna LEM
     if lem not in ['B','CT'] or lem == None:
         return 'erro na LEM'
-
+    #verificação de erro na coluna da atividade selecionada
     if indice == None:
         return f'erro no indice - {atividade}'
-
+    #verificação se foi lançado um 'NR' ou um "A" de TAF alternativo
     if isinstance(indice,str):
         if indice == 'NR' or indice == 'A':
             return indice
@@ -307,6 +310,24 @@ def filtra_segmento(tabela, segmento, mas, fem):
     except:
         return tabela
 
+#criar colunas com as menções de cada índice.
+def criar_coluna_mencao_atividade(tabela):
+    atividades = ['CORRIDA', 'FLEXÃO', 'ABDOMINAL', 'BARRA']
+    for atividade in atividades:
+        tabela[f"M_{atividade}"] = tabela.apply(lambda row: determinar_mencao(row['IDADE'],dicio_atividades,atividade, row['LEM'], row['SEGMENTO'], row[atividade]), axis=1)
+    nova_tabela = tabela[(['M_CORRIDA','M_FLEXÃO','M_ABDOMINAL','M_BARRA'])]
+    return nova_tabela
+
+
+
+
+
+
+
+
+
+
+
 
 ####################-> GRÁFICOS <-#####################
 
@@ -391,6 +412,95 @@ def idade_seg_atv(tabela, atividade):
 
 
 
+
+#Gráfico para comparar a evolução dos TAF
+def graf_linhas_mencoes_por_taf(df):
+    """
+    Linha das menções (I, R, B, MB, E) para 1º, 2º e 3º TAF.
+    df precisa ter colunas 'TAF' e 'MENÇÃO'.
+    """
+    ordem = ['I', 'R', 'B', 'MB', 'E']
+
+    # 1. Conta menções por TAF
+    cont = (df[df['MENÇÃO'].isin(ordem)]
+            .groupby(['TAF', 'MENÇÃO'])
+            .size()
+            .reset_index(name='quantidade'))
+
+    # 2. Garante ordem no eixo X
+    cont['MENÇÃO'] = pd.Categorical(cont['MENÇÃO'],
+                                    categories=ordem,
+                                    ordered=True)
+
+    # 3. Gráfico
+    fig = px.line(
+        cont.sort_values('MENÇÃO'),
+        x='MENÇÃO',
+        y='quantidade',
+        color='TAF',
+        markers=True,
+        category_orders={'MENÇÃO': ordem},
+        title='Evolução das Menções por TAF'
+    )
+    fig.update_layout(xaxis_title='Menção',
+                      yaxis_title='Quantidade',
+                      legend_title_text='TAF')
+    return fig
+
+
+
+
+#GRÁFICO LINHA PARA COMPARAR MENÇÕES DAS ATIVIDADES
+def grafico_linha(tabela, **kwargs):
+    atividades = dict()
+    for k,v in kwargs.items():
+        if v:
+            if k == 'flexao':
+                atividades['flexão'] = 'M_FLEXÃO'
+            else:
+                atividades[k] = f'M_{k.upper()}'
+        
+# ── 3. Conta quantas menções por atividade ───────────────────────────
+    ordem = ["I", "R", "B", "MB", "E"]       # sequência fixa no eixo X
+    registros = []
+
+    for nome, coluna in atividades.items():
+        cont = tabela[coluna].value_counts()
+        for mencao in ordem:
+            registros.append(
+                {"Atividade": nome,
+                "Menção": mencao,
+                "Quantidade": int(cont.get(mencao, 0))}
+            )
+
+    long_df = pd.DataFrame(registros)
+    long_df["Menção"] = pd.Categorical(long_df["Menção"], categories=ordem, ordered=True)
+
+    # ── 4. Gráfico de linhas ─────────────────────────────────────────────
+    fig = px.line(
+        long_df.sort_values("Menção"),
+        x="Menção",
+        y="Quantidade",
+        color="Atividade",
+        markers=True,                        # pontinhos em cada menção
+        title="Distribuição das Menções por Atividade",
+        category_orders={"Menção": ordem},
+    )
+    fig.update_layout(
+        yaxis_title="Quantidade de Menções",
+        legend_title_text="Atividade",
+    )
+
+    # Se estiver num script Streamlit:
+    return fig
+
+
+
+
+
+
+
+
 #somente para realização de testes
 if __name__=='__main__':
     from pathlib import Path
@@ -404,4 +514,6 @@ if __name__=='__main__':
     #tabela_tafs = tabela_tafs[~((tabela_tafs["CORRIDA"] == 'A') | (tabela_tafs["CORRIDA"].isna()) | (tabela_tafs["CORRIDA"] == 'X'))] # trata a tabela para tirar "A", nulo e 'X'
     tabela_tafs["menção item"] = tabela_tafs.apply(lambda row: determinar_mencao(row['IDADE'],dicio_atividades,'CORRIDA', row['LEM'], row['SEGMENTO'], row['CORRIDA']), axis=1)
     #idade,dicio_atividades,atividade,lem,segmento,indice
-    a = tabela_tafs['menção item'].value_counts()
+   
+    nova_tabela = criar_coluna_mencao_atividade(tabela_tafs)
+    #nova_tabela.to_excel('tabela.xlsx', index=False)

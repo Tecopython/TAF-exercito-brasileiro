@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 dicio_corrida_m_b = {
     "18-21": {
         "I": (0, 2599),
@@ -855,11 +857,11 @@ dicio_abdominal_f_c = {
 
 # Dicionário que mapeia o nome da atividade para as tabelas correspondentes (masculino e feminino)
 dicio_atividades = {'B':{
-    "CORRIDA": {
+    'CORRIDA': {
         "M": dicio_corrida_m_b,
         "F": dicio_corrida_f_b
     },
-    "FLEXAO": {
+    'FLEXÃO': {
         "M": dicio_flexao_m_b,
         "F": dicio_flexao_f_b
     },
@@ -877,7 +879,7 @@ dicio_atividades = {'B':{
         "M": dicio_corrida_m_c,
         "F": dicio_corrida_f_c
     },
-    "FLEXAO": {
+    "FLEXÃO": {
         "M": dicio_flexao_m_c,
         "F": dicio_flexao_f_c
     },
