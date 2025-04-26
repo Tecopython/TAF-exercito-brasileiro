@@ -315,7 +315,7 @@ def criar_coluna_mencao_atividade(tabela):
     atividades = ['CORRIDA', 'FLEXÃO', 'ABDOMINAL', 'BARRA']
     for atividade in atividades:
         tabela[f"M_{atividade}"] = tabela.apply(lambda row: determinar_mencao(row['IDADE'],dicio_atividades,atividade, row['LEM'], row['SEGMENTO'], row[atividade]), axis=1)
-    nova_tabela = tabela[(['M_CORRIDA','M_FLEXÃO','M_ABDOMINAL','M_BARRA'])]
+    nova_tabela = tabela[(['MENÇÃO','M_CORRIDA','M_FLEXÃO','M_ABDOMINAL','M_BARRA'])]
     return nova_tabela
 
 
@@ -452,16 +452,27 @@ def graf_linhas_mencoes_por_taf(df):
 
 #GRÁFICO LINHA PARA COMPARAR MENÇÕES DAS ATIVIDADES
 def grafico_linha(tabela, **kwargs):
+    cores_fixas = {
+    "Menção Geral":    "black",
+    "Corrida":   "red",
+    "Flexão":    "orange",
+    "Abdominal": "green",
+    "Barra":     "pink",
+}
+    
     atividades = dict()
     for k,v in kwargs.items():
         if v:
-            if k == 'flexao':
-                atividades['flexão'] = 'M_FLEXÃO'
+            if k == 'flexao': #só para não mudar o nome da variável e dar erro em outra parte do código.
+                atividades['Flexão'] = 'M_FLEXÃO'
+            elif k == 'mencao':
+                atividades['Menção Geral'] = 'MENÇÃO'
             else:
-                atividades[k] = f'M_{k.upper()}'
+                atividades[k.capitalize()] = f'M_{k.upper()}'
         
 # ── 3. Conta quantas menções por atividade ───────────────────────────
     ordem = ["I", "R", "B", "MB", "E"]       # sequência fixa no eixo X
+    ordem_atividades = ['Menção Geral', 'Corrida', 'Flexão', 'Abdominal', 'Barra']
     registros = []
 
     for nome, coluna in atividades.items():
@@ -484,7 +495,10 @@ def grafico_linha(tabela, **kwargs):
         color="Atividade",
         markers=True,                        # pontinhos em cada menção
         title="Distribuição das Menções por Atividade",
-        category_orders={"Menção": ordem},
+        category_orders={
+            "Menção": ordem,
+            'Atividade':ordem_atividades},
+        color_discrete_map=cores_fixas
     )
     fig.update_layout(
         yaxis_title="Quantidade de Menções",

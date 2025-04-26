@@ -110,34 +110,40 @@ if idade:
             if abdominal:
                 if barra:
                     if mencao:#Todos os itens
-                        with mid_col:
-                            st.subheader(f'Para idade entre {escolha_idade}')
-                            st.dataframe(tabela_filtrada_idade.drop(columns=['OBS', 'COMPANHIA', 'CHAMADA','TAF','BI Publicado']))
+                        col5.write('Gráfico comparativo das menções por cada atividade com a menção geral')
+                        with col6:
+                            st.plotly_chart(f.grafico_linha(tabela=tabela_mencao_atividades, corrida=corrida, flexao=flexao, abdominal=abdominal, barra=barra, mencao=mencao))
+                        #with mid_col:
+                            # st.subheader(f'Para idade entre {escolha_idade}')
+                            # st.dataframe(tabela_filtrada_idade.drop(columns=['COMPANHIA', 'CHAMADA','TAF',]))
                     else:#IDADE - CORRIDA - FLEXÃO - ABDOMINAL - BARRA
                         col5.write('Gráfico comparativo das menções por cada atividade')
                         with col6:
                             st.plotly_chart(f.grafico_linha(tabela=tabela_mencao_atividades, corrida=corrida, flexao=flexao, abdominal=abdominal, barra=barra))
                 else:
-                    if mencao:
-                        col5.write('**SIM** - idade - corrida - flexão - abdominal - menção')
-                        col6.write('**NÃO** - barra')
+                    if mencao:# IDADE - CORRIDA - FLEXÃO - ABDOMINAL - MENÇÃO
+                        col5.write('Gráfico comparativo das menções por cada atividade com a menção geral')
+                        with col6:
+                            st.plotly_chart(f.grafico_linha(tabela=tabela_mencao_atividades, corrida=corrida, flexao=flexao, abdominal=abdominal, barra=barra, mencao=mencao))
                     else:#IDADE - CORRIDA - FLEXÃO - ABDOMINAL
                         col5.write('Gráfico comparativo das menções por cada atividade')
                         with col6:
                             st.plotly_chart(f.grafico_linha(tabela=tabela_mencao_atividades, corrida=corrida, flexao=flexao, abdominal=abdominal, barra=barra))
             else:
                 if barra:
-                    if mencao:
-                        col5.write('**SIM** - idade - corrida - flexão - barra - menção')
-                        col6.write('**NÃO** - abdominal')
+                    if mencao:#IDADE - CORRIDA - FLEXÃO - BARRA - MENÇÃO
+                        col5.write('Gráfico comparativo das menções por cada atividade com a menção geral')
+                        with col6:
+                            st.plotly_chart(f.grafico_linha(tabela=tabela_mencao_atividades, corrida=corrida, flexao=flexao, abdominal=abdominal, barra=barra, mencao=mencao))
                     else:#IDADE - CORRIDA - FLEXÃO - BARRA
                         col5.write('Gráfico comparativo das menções por cada atividade')
                         with col6:
                             st.plotly_chart(f.grafico_linha(tabela=tabela_mencao_atividades, corrida=corrida, flexao=flexao, abdominal=abdominal, barra=barra))
                 else:
-                    if mencao:
-                        col5.write('**SIM** - idade - corrida - flexão - menção')
-                        col6.write('**NÃO** - abdominal - barra')
+                    if mencao:# IDADE - CORRIDA - FLEXÃO - MENÇÃO
+                        col5.write('Gráfico comparativo das menções por cada atividade com a menção geral')
+                        with col6:
+                            st.plotly_chart(f.grafico_linha(tabela=tabela_mencao_atividades, corrida=corrida, flexao=flexao, abdominal=abdominal, barra=barra, mencao=mencao))
                     else:#IDADE - CORRIDA - FLEXÃO
                         col5.write('Gráfico comparativo das menções por cada atividade')
                         with col6:
@@ -145,34 +151,38 @@ if idade:
         else:
             if abdominal:
                 if barra:
-                    if mencao:
-                        col5.write('**SIM** - idade - corrida - abdominal - barra - menção')
-                        col6.write('**NÃO** - flexão')
+                    if mencao:# IDADE - CORRIDA - ABDOMINAL - BARRA - MENÇÃO
+                        col5.write('Gráfico comparativo das menções por cada atividade com a menção geral')
+                        with col6:
+                            st.plotly_chart(f.grafico_linha(tabela=tabela_mencao_atividades, corrida=corrida, flexao=flexao, abdominal=abdominal, barra=barra, mencao=mencao))
                     else:#IDADE - CORRIDA - ABDOMINAL - BARRA
                         col5.write('Gráfico comparativo das menções por cada atividade')
                         with col6:
                             st.plotly_chart(f.grafico_linha(tabela=tabela_mencao_atividades, corrida=corrida, flexao=flexao, abdominal=abdominal, barra=barra))
                 else:
-                    if mencao:
-                        col5.write('**SIM** - idade - corrida - abdominal- menção')
-                        col6.write('**NÃO** - flexão - barra')
+                    if mencao:# IDADE - CORRIDA - ABDOMINAL - MENÇÃO
+                        col5.write('Gráfico comparativo das menções por cada atividade com a menção geral')
+                        with col6:
+                            st.plotly_chart(f.grafico_linha(tabela=tabela_mencao_atividades, corrida=corrida, flexao=flexao, abdominal=abdominal, barra=barra, mencao=mencao))
                     else:#IDADE - CORRIDA - ABDOMINAL
                         col5.write('Gráfico comparativo das menções por cada atividade')
                         with col6:
                             st.plotly_chart(f.grafico_linha(tabela=tabela_mencao_atividades, corrida=corrida, flexao=flexao, abdominal=abdominal, barra=barra))
             else:
                 if barra:
-                    if mencao:
-                        col5.write('**SIM** - idade - corrida - barra - menção')
-                        col6.write('**NÃO** - flexão - abdominal')
+                    if mencao:#IDADE - CORRIDA - BARRA - MENÇÃO
+                        col5.write('Gráfico comparativo das menções por cada atividade com a menção geral')
+                        with col6:
+                            st.plotly_chart(f.grafico_linha(tabela=tabela_mencao_atividades, corrida=corrida, flexao=flexao, abdominal=abdominal, barra=barra, mencao=mencao))
                     else:#IDADE - CORRIDA - BARRA
                         col5.write('Gráfico comparativo das menções por cada atividade')
                         with col6:
                             st.plotly_chart(f.grafico_linha(tabela=tabela_mencao_atividades, corrida=corrida, flexao=flexao, abdominal=abdominal, barra=barra))
                 else:
-                    if mencao:
-                        col5.write('**SIM** - idade - corrida - menção')
-                        col6.write('**NÃO** - flexão - abdominal - barra')
+                    if mencao:# IDADE - CORRIDA - MENÇÃO
+                        col5.write('Gráfico comparativo das menções por cada atividade com a menção geral')
+                        with col6:
+                            st.plotly_chart(f.grafico_linha(tabela=tabela_mencao_atividades, corrida=corrida, flexao=flexao, abdominal=abdominal, barra=barra, mencao=mencao))
                     else: #IDADE E CORRIDA
                         col5.write(f'Este gráfico de disperção mostra o desempenho na CORRIDA por SEGMENTO E IDADE -> {escolha_idade} anos')
                         with col6:
@@ -181,34 +191,38 @@ if idade:
         if flexao:
             if abdominal:
                 if barra:
-                    if mencao:
-                        col5.write('**SIM** - idade - flexão - abdominal - barra - menção')
-                        col6.write('**NÃO** - corrida')
+                    if mencao:# IDADE - FLEXÃO - ABDOMINAL - BARRA - MENÇÃO
+                        col5.write('Gráfico comparativo das menções por cada atividade com a menção geral')
+                        with col6:
+                            st.plotly_chart(f.grafico_linha(tabela=tabela_mencao_atividades, corrida=corrida, flexao=flexao, abdominal=abdominal, barra=barra, mencao=mencao))
                     else:#IDADE - FLEXÃO - ABDOMINAL - BARRA
                         col5.write('Gráfico comparativo das menções por cada atividade')
                         with col6:
                             st.plotly_chart(f.grafico_linha(tabela=tabela_mencao_atividades, corrida=corrida, flexao=flexao, abdominal=abdominal, barra=barra))
                 else:
-                    if mencao:
-                        col5.write('**SIM** - idade - flexão - abdominal- menção')
-                        col6.write('**NÃO** - corrida - barra')
+                    if mencao:# IDADE - FLEXÃO - ABDOMINAL - MENÇÃO
+                        col5.write('Gráfico comparativo das menções por cada atividade com a menção geral')
+                        with col6:
+                            st.plotly_chart(f.grafico_linha(tabela=tabela_mencao_atividades, corrida=corrida, flexao=flexao, abdominal=abdominal, barra=barra, mencao=mencao))
                     else:# IDADE - FLEXÃO - ABDOMINAL
                         col5.write('Gráfico comparativo das menções por cada atividade')
                         with col6:
                             st.plotly_chart(f.grafico_linha(tabela=tabela_mencao_atividades, corrida=corrida, flexao=flexao, abdominal=abdominal, barra=barra))
             else: #corrida abdominal não
                 if barra:
-                    if mencao:
-                        col5.write('**SIM** - idade - flexão - barra - menção')
-                        col6.write('**NÃO** - corrida - abdominal')
+                    if mencao:# IDADE - FLEXÃO - BARRA - MENÇÃO
+                        col5.write('Gráfico comparativo das menções por cada atividade com a menção geral')
+                        with col6:
+                            st.plotly_chart(f.grafico_linha(tabela=tabela_mencao_atividades, corrida=corrida, flexao=flexao, abdominal=abdominal, barra=barra, mencao=mencao))
                     else:#IDADE - FLEXÃO - BARRA
                         col5.write('Gráfico comparativo das menções por cada atividade')
                         with col6:
                             st.plotly_chart(f.grafico_linha(tabela=tabela_mencao_atividades, corrida=corrida, flexao=flexao, abdominal=abdominal, barra=barra))
                 else:#barra não
-                    if mencao:
-                        col5.write('**SIM** - idade - flexão - menção')
-                        col6.write('**NÃO** - corrida - abdominal - barra')
+                    if mencao:# IDADE - FLEXÃO - MENÇÃO
+                        col5.write('Gráfico comparativo das menções por cada atividade com a menção geral')
+                        with col6:
+                            st.plotly_chart(f.grafico_linha(tabela=tabela_mencao_atividades, corrida=corrida, flexao=flexao, abdominal=abdominal, barra=barra, mencao=mencao))
                     else:# IDADE E FLEXÃO
                         col5.write(f'Este gráfico de disperção mostra o desempenho na FLEXÃO DE BRAÇO por SEGMENTO E IDADE -> {escolha_idade} anos')
                         with col6:
@@ -216,26 +230,29 @@ if idade:
         else: #corrida - flexão - não
             if abdominal:
                 if barra:
-                    if mencao:
-                        col5.write('**SIM** - idade - abdominal - barra - menção')
-                        col6.write('**NÃO** - corrida - flexão')
+                    if mencao:# IDADE - ABDOMINAL - BARRA - MENÇÃO
+                        col5.write('Gráfico comparativo das menções por cada atividade com a menção geral')
+                        with col6:
+                            st.plotly_chart(f.grafico_linha(tabela=tabela_mencao_atividades, corrida=corrida, flexao=flexao, abdominal=abdominal, barra=barra, mencao=mencao))
                     else:#IDADE - ABDOMINAL - BARRA
                         col5.write('Gráfico comparativo das menções por cada atividade')
                         with col6:
                             st.plotly_chart(f.grafico_linha(tabela=tabela_mencao_atividades, corrida=corrida, flexao=flexao, abdominal=abdominal, barra=barra))
                 else:
-                    if mencao:
-                        col5.write('**SIM** - idade - abdominal - menção')
-                        col6.write('**NÃO** - corrida - flexão - barra')
+                    if mencao:# IDADE - ABDOMINAL - MENÇÃO
+                        col5.write('Gráfico comparativo das menções por cada atividade com a menção geral')
+                        with col6:
+                            st.plotly_chart(f.grafico_linha(tabela=tabela_mencao_atividades, corrida=corrida, flexao=flexao, abdominal=abdominal, barra=barra, mencao=mencao))
                     else:# IDADE E ABDOMINAL
                         col5.write(f'Este gráfico de disperção mostra o desempenho no ABDOMINAL por SEGMENTO E IDADE -> {escolha_idade} anos')
                         with col6:
                             f.idade_seg_atv(tabela_filtrada_idade, 'ABDOMINAL')
             else: #corrida - flexão - abdominal
                 if barra:
-                    if mencao:
-                        col5.write('**SIM** - idade - barra - menção')
-                        col6.write('**NÃO** - corrida - flexão - abdominal')
+                    if mencao:# IDADE - BARRA - MENÇÃO
+                        col5.write('Gráfico comparativo das menções por cada atividade com a menção geral')
+                        with col6:
+                            st.plotly_chart(f.grafico_linha(tabela=tabela_mencao_atividades, corrida=corrida, flexao=flexao, abdominal=abdominal, barra=barra, mencao=mencao))
                     else: #IDADE E BARRA
                         col5.write(f'Este gráfico de disperção mostra o desempenho na BARRA por SEGMENTO E IDADE -> {escolha_idade} anos')
                         with col6:
@@ -266,26 +283,29 @@ else: #idade não
                             st.plotly_chart(f.grafico_linha(tabela=tabela_mencao_atividades, corrida=corrida, flexao=flexao, abdominal=abdominal, barra=barra))
                        
                 else:#idade - barra -não
-                    if mencao:
-                        col5.write('**SIM** - corrida - flexão - abdominal - menção')
-                        col6.write('**NÃO** - idade - barra')
+                    if mencao:# CORRIDA - FLEXÃO - ABDOMINAL - MENÇÃO
+                        col5.write('Gráfico comparativo das menções por cada atividade com a menção geral')
+                        with col6:
+                            st.plotly_chart(f.grafico_linha(tabela=tabela_mencao_atividades, corrida=corrida, flexao=flexao, abdominal=abdominal, barra=barra, mencao=mencao))
                     else:# CORRIDA - FLEXÃO - ABDOMINAL
                         col5.write('Gráfico comparativo das menções por cada atividade')
                         with col6:
                             st.plotly_chart(f.grafico_linha(tabela=tabela_mencao_atividades, corrida=corrida, flexao=flexao, abdominal=abdominal, barra=barra))
             else:#idade - abdominal não
                 if barra:
-                    if mencao:
-                        col5.write('**SIM** - corrida - flexão - barra - menção')
-                        col6.write('**NÃO** - idade - abdominal')
+                    if mencao:# CORRIDA - FLEXÃO - BARRA - MENÇÃO
+                        col5.write('Gráfico comparativo das menções por cada atividade com a menção geral')
+                        with col6:
+                            st.plotly_chart(f.grafico_linha(tabela=tabela_mencao_atividades, corrida=corrida, flexao=flexao, abdominal=abdominal, barra=barra, mencao=mencao))
                     else:# CORRIDA - FLEXÃO - BARRA
                         col5.write('Gráfico comparativo das menções por cada atividade')
                         with col6:
                             st.plotly_chart(f.grafico_linha(tabela=tabela_mencao_atividades, corrida=corrida, flexao=flexao, abdominal=abdominal, barra=barra))
                 else:
-                    if mencao:
-                        col5.write('**SIM** - corrida - flexão - menção')
-                        col6.write('**NÃO** - idade - abdominal - barra')
+                    if mencao:# CORRIDA - FLEXÃO - MENÇÃO
+                        col5.write('Gráfico comparativo das menções por cada atividade com a menção geral')
+                        with col6:
+                            st.plotly_chart(f.grafico_linha(tabela=tabela_mencao_atividades, corrida=corrida, flexao=flexao, abdominal=abdominal, barra=barra, mencao=mencao))
                     else:#CORRIDA - FLEXÃO
                         col5.write('Gráfico comparativo das menções por cada atividade')
                         with col6:
@@ -293,34 +313,38 @@ else: #idade não
         else:
             if abdominal:
                 if barra:
-                    if mencao:
-                        col5.write('**SIM** - corrida - abdominal - barra - menção')
-                        col6.write('**NÃO** - idade - flexão')
+                    if mencao:# CORRIDA - ABDOMINAL - BARRA - MENÇÃO
+                        col5.write('Gráfico comparativo das menções por cada atividade com a menção geral')
+                        with col6:
+                            st.plotly_chart(f.grafico_linha(tabela=tabela_mencao_atividades, corrida=corrida, flexao=flexao, abdominal=abdominal, barra=barra, mencao=mencao))
                     else:#CORRIDA - ABDOMINAL - BARRA
                         col5.write('Gráfico comparativo das menções por cada atividade')
                         with col6:
                             st.plotly_chart(f.grafico_linha(tabela=tabela_mencao_atividades, corrida=corrida, flexao=flexao, abdominal=abdominal, barra=barra))
                 else:
-                    if mencao:
-                        col5.write('**SIM** - corrida - abdominal- menção')
-                        col6.write('**NÃO** - idade - flexão - barra')
+                    if mencao:# CORRIDA - ABDOMINAL - MENÇÃO
+                        col5.write('Gráfico comparativo das menções por cada atividade com a menção geral')
+                        with col6:
+                            st.plotly_chart(f.grafico_linha(tabela=tabela_mencao_atividades, corrida=corrida, flexao=flexao, abdominal=abdominal, barra=barra, mencao=mencao))
                     else:#CORRIDA - ABDOMINAL
                         col5.write('Gráfico comparativo das menções por cada atividade')
                         with col6:
                             st.plotly_chart(f.grafico_linha(tabela=tabela_mencao_atividades, corrida=corrida, flexao=flexao, abdominal=abdominal, barra=barra))
             else:
                 if barra:
-                    if mencao:
-                        col5.write('**SIM** - corrida - barra - menção')
-                        col6.write('**NÃO** - idade - flexão - abdominal')
+                    if mencao:# CORRIDA - BARRA - MENÇÃO
+                        col5.write('Gráfico comparativo das menções por cada atividade com a menção geral')
+                        with col6:
+                            st.plotly_chart(f.grafico_linha(tabela=tabela_mencao_atividades, corrida=corrida, flexao=flexao, abdominal=abdominal, barra=barra, mencao=mencao))
                     else:#CORRIDA - BARRA
                         col5.write('Gráfico comparativo das menções por cada atividade')
                         with col6:
                             st.plotly_chart(f.grafico_linha(tabela=tabela_mencao_atividades, corrida=corrida, flexao=flexao, abdominal=abdominal, barra=barra))
                 else:
-                    if mencao:
-                        col5.write('**SIM** - corrida - menção')
-                        col6.write('**NÃO** - idade - flexão - abdominal - barra')
+                    if mencao:#CORRIDA - MENÇÃO
+                        col5.write('Gráfico comparativo das menções por cada atividade com a menção geral')
+                        with col6:
+                            st.plotly_chart(f.grafico_linha(tabela=tabela_mencao_atividades, corrida=corrida, flexao=flexao, abdominal=abdominal, barra=barra, mencao=mencao))
                     else:#SOMENTE CORRIDA
                         tabela_filtrada_idade = tabela_filtrada_idade[~((tabela_filtrada_idade["CORRIDA"] == 'A') | (tabela_filtrada_idade["CORRIDA"].isna()) | (tabela_filtrada_idade["CORRIDA"] == 'X'))] # trata a tabela para tirar "A", nulo e 'X'
                         tabela_filtrada_idade["Menção na corrida"] = tabela_filtrada_idade.apply(lambda row: f.determinar_mencao(row['IDADE'],dicio_atividades,'CORRIDA', row['LEM'], row['SEGMENTO'], row['CORRIDA']), axis=1)
@@ -332,32 +356,35 @@ else: #idade não
         if flexao:
             if abdominal:
                 if barra:
-                    if mencao:
-                        col5.write('**SIM** - flexão - abdominal - barra - menção')
-                        col6.write('**NÃO** - idade - corrida')
+                    if mencao:# FLEXÃO - ABDOMINAL - BARRA - MENÇÃO
+                        col5.write('Gráfico comparativo das menções por cada atividade com a menção geral')
+                        with col6:
+                            st.plotly_chart(f.grafico_linha(tabela=tabela_mencao_atividades, corrida=corrida, flexao=flexao, abdominal=abdominal, barra=barra, mencao=mencao))
                     else:#FLEXÃO - ABDOMINAL - BARRA
                         col5.write('Gráfico comparativo das menções por cada atividade')
                         with col6:
                             st.plotly_chart(f.grafico_linha(tabela=tabela_mencao_atividades, corrida=corrida, flexao=flexao, abdominal=abdominal, barra=barra))
                 else:
-                    if mencao:
-                        col5.write('**SIM** - flexão - abdominal- menção')
-                        col6.write('**NÃO** - idade - corrida - barra')
+                    if mencao:# FLEXÃO - ABDOMINAL - MENÇÃO
+                        col5.write('Gráfico comparativo das menções por cada atividade com a menção geral')
+                        with col6:
+                            st.plotly_chart(f.grafico_linha(tabela=tabela_mencao_atividades, corrida=corrida, flexao=flexao, abdominal=abdominal, barra=barra, mencao=mencao))
                     else:#FLEXÃO - ABDOMINAL
                         col5.write('Gráfico comparativo das menções por cada atividade')
                         with col6:
                             st.plotly_chart(f.grafico_linha(tabela=tabela_mencao_atividades, corrida=corrida, flexao=flexao, abdominal=abdominal, barra=barra))
             else: #corrida abdominal não
                 if barra:
-                    if mencao:
-                        col5.write('**SIM** - flexão - barra - menção')
-                        col6.write('**NÃO** -idade -  corrida - abdominal')
-                    else:#FLEXÃO - BARRA
+                    if mencao:# FLEXÃO - BARRA - MENÇÃO
+                        col5.write('Gráfico comparativo das menções por cada atividade com a menção geral')
+                        with col6:
+                            st.plotly_chart(f.grafico_linha(tabela=tabela_mencao_atividades, corrida=corrida, flexao=flexao, abdominal=abdominal, barra=barra, mencao=mencao))
+                    else:# FLEXÃO - BARRA
                         col5.write('Gráfico comparativo das menções por cada atividade')
                         with col6:
                             st.plotly_chart(f.grafico_linha(tabela=tabela_mencao_atividades, corrida=corrida, flexao=flexao, abdominal=abdominal, barra=barra))
                 else:#barra não
-                    if mencao:
+                    if mencao:# FLEXÃO - MENÇÃO
                         col5.write('**SIM** - flexão - menção')
                         col6.write('**NÃO** -idade -  corrida - abdominal - barra')
                     else: #SOMENTE FLEXÃO
@@ -370,17 +397,19 @@ else: #idade não
         else: #corrida - flexão - não
             if abdominal:
                 if barra:
-                    if mencao:
-                        col5.write('**SIM** - abdominal - barra - menção')
-                        col6.write('**NÃO** - idade - corrida - flexão')
+                    if mencao:# ABDOMINAL - BARRA - MENÇÃO
+                        col5.write('Gráfico comparativo das menções por cada atividade com a menção geral')
+                        with col6:
+                            st.plotly_chart(f.grafico_linha(tabela=tabela_mencao_atividades, corrida=corrida, flexao=flexao, abdominal=abdominal, barra=barra, mencao=mencao))
                     else:#ABDOMINAL - BARRA
                         col5.write('Gráfico comparativo das menções por cada atividade')
                         with col6:
                             st.plotly_chart(f.grafico_linha(tabela=tabela_mencao_atividades, corrida=corrida, flexao=flexao, abdominal=abdominal, barra=barra))
                 else:
-                    if mencao:
-                        col5.write('**SIM** - abdominal - menção')
-                        col6.write('**NÃO** - idade - corrida - flexão - barra')
+                    if mencao:# ABDOMINAL - MENÇÃO
+                        col5.write('Gráfico comparativo das menções por cada atividade com a menção geral')
+                        with col6:
+                            st.plotly_chart(f.grafico_linha(tabela=tabela_mencao_atividades, corrida=corrida, flexao=flexao, abdominal=abdominal, barra=barra, mencao=mencao))
                     else:# SOMENTE ABDOMINAL
                         tabela_filtrada_idade = tabela_filtrada_idade[~((tabela_filtrada_idade["ABDOMINAL"] == 'A') | (tabela_filtrada_idade["ABDOMINAL"].isna()) | (tabela_filtrada_idade["ABDOMINAL"] == 'X'))] # trata a tabela para tirar "A", nulo e 'X'
                         tabela_filtrada_idade["Menção no abdominal"] = tabela_filtrada_idade.apply(lambda row: f.determinar_mencao(row['IDADE'],dicio_atividades,'ABDOMINAL', row['LEM'], row['SEGMENTO'], row['ABDOMINAL']), axis=1)
@@ -390,9 +419,10 @@ else: #idade não
                             st.pyplot(f.grafico_pizza(tabela_filtrada_idade, "Menção no abdominal"))
             else: #corrida - flexão - abdominal
                 if barra:
-                    if mencao:
-                        col5.write('**SIM** - barra - menção')
-                        col6.write('**NÃO** - idade - corrida - flexão - abdominal')
+                    if mencao:# BARRA - MENÇÃO
+                        col5.write('Gráfico comparativo das menções por cada atividade com a menção geral')
+                        with col6:
+                            st.plotly_chart(f.grafico_linha(tabela=tabela_mencao_atividades, corrida=corrida, flexao=flexao, abdominal=abdominal, barra=barra, mencao=mencao))
                     else:# SOMENTE BARRA
                         tabela_filtrada_idade = tabela_filtrada_idade[~((tabela_filtrada_idade["BARRA"] == 'A') | (tabela_filtrada_idade["BARRA"].isna()) | (tabela_filtrada_idade["BARRA"] == 'X'))] # trata a tabela para tirar "A", nulo e 'X'
                         tabela_filtrada_idade["Menção na barra"] = tabela_filtrada_idade.apply(lambda row: f.determinar_mencao(row['IDADE'],dicio_atividades,'BARRA', row['LEM'], row['SEGMENTO'], row['BARRA']), axis=1)
