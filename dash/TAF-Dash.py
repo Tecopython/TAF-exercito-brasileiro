@@ -98,6 +98,10 @@ tabela_filtrada = f.filtra_su(
 tabela_filtrada_idade = f.filtra_idade(tabela_filtrada,escolha_idade)
 #CRIA UMA TABELA COM AS MENÇÕES POR ATIVIDADE
 tabela_mencao_atividades = f.criar_coluna_mencao_atividade(tabela_filtrada_idade)
+
+#Tabela só com os NR
+tabela_NR = tabela_filtrada_idade[((tabela_filtrada_idade['IDADE']=='NR') | (tabela_filtrada_idade['MENÇÃO']=='NR'))]
+
 #MOSTRAR A TABELA FILTRADA AO FINAL DA PÁGINA.
 st.markdown("<h2 style='text-align: center;'>Tabela com os filtros aplicados</h1>", unsafe_allow_html=True)
 #MONSTRAR A TABELA FILTRADA NO FINAL DA PÁGINA.

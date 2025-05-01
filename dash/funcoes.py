@@ -99,8 +99,8 @@ def pega_taf(tabela,taf_1=True, taf_2=False, taf_3=False):#filtra os TAF de acor
             tabela = tabela[tabela['TAF'].isin(['3º TAF'])]
             tabela.reset_index(inplace=True, drop=True)
             return tabela
-    except:
-        return pd.DataFrame()
+    except Exception as e:
+        return st.exception(e)
 
 
 ##############################################################################
@@ -132,8 +132,8 @@ def filtra_chamadas(tabela,primeira_chamada,segunda_chamada,nr=False):
             tabela = tabela[tabela['CHAMADA'].isin(['NR'])]
             tabela.reset_index(inplace=True, drop=True)
             return tabela
-    except:
-        return pd.DataFrame()
+    except Exception as e:
+        return st.exception(e)
     
 ##################################################################################################
 def filtra_su(tabela,escolha_su):
@@ -160,8 +160,8 @@ def filtra_su(tabela,escolha_su):
             tabela = tabela[tabela['COMPANHIA'].isin(['B Mus'])]
             tabela.reset_index(inplace=True, drop=True)
             return tabela
-    except:
-        return pd.DataFrame()
+    except Exception as e:
+        return st.exception(e)
 
 ###############################################################################################
 def filtra_idade(tabela,escolha_idade=None):
@@ -207,8 +207,8 @@ def filtra_idade(tabela,escolha_idade=None):
                 return tabela
         else:
             return tabela
-    except:
-        return tabela
+    except Exception as e:
+        return st.exception(e)
     
 
 ################################################################################################
@@ -288,8 +288,8 @@ def filtra_pg(tabela,oficiais,st_sgt,cb_sd_ep,sd_ev):
                         return tabela
                     else:
                         return pd.DataFrame()
-    except:
-        pd.DataFrame()
+    except Exception as e:
+        return st.exception(e)
 
 ##################################################################################
 def filtra_segmento(tabela, segmento, mas, fem):
@@ -307,16 +307,20 @@ def filtra_segmento(tabela, segmento, mas, fem):
                 return tabela
         else:
             return tabela
-    except:
-        return tabela
+    except Exception as e:
+        return st.exception(e)
 
 #criar colunas com as menções de cada índice.
 def criar_coluna_mencao_atividade(tabela):
-    atividades = ['CORRIDA', 'FLEXÃO', 'ABDOMINAL', 'BARRA']
-    for atividade in atividades:
-        tabela[f"M_{atividade}"] = tabela.apply(lambda row: determinar_mencao(row['IDADE'],dicio_atividades,atividade, row['LEM'], row['SEGMENTO'], row[atividade]), axis=1)
-    nova_tabela = tabela[(['MENÇÃO','M_CORRIDA','M_FLEXÃO','M_ABDOMINAL','M_BARRA'])]
-    return nova_tabela
+    try:
+        copia_tabela = tabela.copy(deep=True)
+        atividades = ['CORRIDA', 'FLEXÃO', 'ABDOMINAL', 'BARRA']
+        for atividade in atividades:
+            copia_tabela[f"M_{atividade}"] = copia_tabela.apply(lambda row: determinar_mencao(row['IDADE'],dicio_atividades,atividade, row['LEM'], row['SEGMENTO'], row[atividade]), axis=1)
+        nova_tabela = copia_tabela[(['MENÇÃO','M_CORRIDA','M_FLEXÃO','M_ABDOMINAL','M_BARRA'])]
+        return nova_tabela
+    except Exception as e:
+        return st.exception(e)
 
 
 
@@ -367,8 +371,8 @@ def grafico_pizza(tabela, info):
         ax.axis('equal')#deixa o gráfico no formato redondo
         ax.text(0,0, info, ha='center', va='center', fontsize=16, color='black')#coloca o título do gráfico no centro (dois primeiros números dizem respeito a posição)
         return pizza
-    except:
-        return "Erro na geração do gráfico: verifique os dados lançados na planilha."
+    except Exception as e:
+        return st.exception(e)
 
 
 ###### Gráfico de barra para representar a quantidade de militares na quantidade do indice alcançado na atividade
@@ -453,7 +457,7 @@ def graf_linhas_mencoes_por_taf(df):
 #GRÁFICO LINHA PARA COMPARAR MENÇÕES DAS ATIVIDADES
 def grafico_linha(tabela, **kwargs):
     cores_fixas = {
-    "Menção Geral":    "black",
+    "Menção Geral": "black",
     "Corrida":   "red",
     "Flexão":    "orange",
     "Abdominal": "green",
@@ -519,6 +523,7 @@ def grafico_linha(tabela, **kwargs):
 if __name__=='__main__':
     from pathlib import Path
     from tabela_indice import *
+    from pprint import pprint
     diretorio_atual = Path.cwd()
     arquivo = diretorio_atual/'PLANILHA TAF.xlsx'
     arquivo_excel = pd.ExcelFile(arquivo)#variável recebe todo o arquivo exel com suas abas
@@ -531,3 +536,7 @@ if __name__=='__main__':
    
     nova_tabela = criar_coluna_mencao_atividade(tabela_tafs)
     #nova_tabela.to_excel('tabela.xlsx', index=False)
+
+    tabela_tafs.value_counts().index, indent=2
+    tabela_NR = tabela_tafs[~((tabela_tafs['IDADE'] =='NR') | (tabela_tafs['MENÇÃO']=='NR'))]
+    tabela_NR['MENÇÃO'].value_counts().index
