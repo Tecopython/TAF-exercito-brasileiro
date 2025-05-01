@@ -279,9 +279,10 @@ else: #idade não
             if abdominal:
                 if barra:
                     if mencao:
-                        with mid_col:
-                            st.dataframe(tabela_filtrada_idade)
-                    else: #CORRIDA FLEXÃO ABDOMINAL BARRA
+                        col5.write('Gráfico comparativo das menções por cada atividade')
+                        with col6:
+                            st.plotly_chart(f.grafico_linha(tabela=tabela_mencao_atividades, corrida=corrida, flexao=flexao, abdominal=abdominal, barra=barra))
+                    else: # CORRIDA - FLEXÃO - ABDOMINAL - BARRA
                         col5.write('Gráfico comparativo das menções por cada atividade')
                         with col6:
                             st.plotly_chart(f.grafico_linha(tabela=tabela_mencao_atividades, corrida=corrida, flexao=flexao, abdominal=abdominal, barra=barra))
